@@ -1,4 +1,3 @@
 include *.py
 include awasu_api/*.py
-include README.rst
 include MANIFEST.in

@@ -1,4 +1,4 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015 (all rights reserved).
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-17 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -13,7 +13,7 @@
 #
 #               - The origin of this software must not be misrepresented;
 #                 you must not claim that you wrote the original software.
-#                 If you use this software, an acknowledgment is requested
+#                 If you use this software, an acknowledgement is requested
 #                 but not required.
 #
 #               - Altered source versions must be plainly marked as such,
@@ -29,24 +29,41 @@
     http://awasu.com/api
 """
 
-import urllib2
 from xml.etree import ElementTree
 import json
 import zlib
-import StringIO
 import re
 
-from utils import safe_xml_string , bool_string
+try :
+    from urllib2 import Request , urlopen
+except ImportError:
+    from urllib.request import Request , urlopen
+try :
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+from awasu_api.utils import safe_xml_string , bool_string
 
 # ---------------------------------------------------------------------
 
 class AwasuApiException( Exception ) :
+    def __init__( self , msg ) :
+        # NOTE: We often receive error messages from Awasu as part of
+        # an XML/JSON response, so we auto-convert it to Unicode here.
+        if isinstance( msg , u"".__class__) :
+            super( AwasuApiException , self ).__init__( msg )
+        else :
+            super( AwasuApiException , self ).__init__( msg.decode("utf-8") )
     pass
 
 # ---------------------------------------------------------------------
 
 class AwasuApi( object ) : #pylint: disable=too-many-public-methods
     """Provides access to the Awasu API."""
+
+    # NOTE: Since we're dealing with XML/JSON/HTML responses from Awasu,
+    # strings are generally encoded bytes, not Unicode.
 
     DEFAULT_API_URL = "http://localhost:2604"
 
@@ -101,14 +118,14 @@ class AwasuApi( object ) : #pylint: disable=too-many-public-methods
             # convert the POST data back to a string
             post_data = ElementTree.tostring( post_data )
         # send the request
-        req = urllib2.Request( url , post_data , {"Accept-Encoding":"deflate"} )
-        resp = urllib2.urlopen( req )
+        req = Request( url , post_data , {"Accept-Encoding":"deflate"} )
+        resp = urlopen( req )
         hdrs = str( resp.info() )
         body = resp.read()
         resp.close() # nb: try to stop socket exhaustion when stress-testing
         # return the response
         hdrs_dict = {} # FIXME! how to get the HTTP status code/message?
-        for line_buf in StringIO.StringIO(hdrs) :
+        for line_buf in StringIO(hdrs) :
             mo = re.match( "^(\\s*[^()<>@,;:\\\"/\\[\\]?={} ]+)\\s*:\\s*(.*)$" , line_buf )
             if mo :
                 hdrs_dict[ mo.group(1) ] = mo.group(2).strip()
@@ -326,7 +343,7 @@ class AwasuApi( object ) : #pylint: disable=too-many-public-methods
         """Get the default workpad."""
         try :
             return self.get_workpad( "@" )
-        except AwasuApiException , xcptn :
+        except AwasuApiException as xcptn :
             if xcptn.message == "No workpads were selected." :
                 return None
             raise
@@ -401,7 +418,7 @@ class AwasuApi( object ) : #pylint: disable=too-many-public-methods
                     if node is not None :
                         raise AwasuApiException( node.text )
             elif fmt == "html" :
-                mo = re.search( "<td class=\"error-msg value\">(.+?)</td>" , response[1] )
+                mo = re.search( b"<td class=\"error-msg value\">(.+?)</td>" , response[1] )
                 if mo :
                     raise AwasuApiException( mo.group(1).strip() )
         return response[1]

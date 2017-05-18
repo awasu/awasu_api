@@ -1,4 +1,4 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015 (all rights reserved).
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-17 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -13,7 +13,7 @@
 #
 #               - The origin of this software must not be misrepresented;
 #                 you must not claim that you wrote the original software.
-#                 If you use this software, an acknowledgment is requested
+#                 If you use this software, an acknowledgement is requested
 #                 but not required.
 #
 #               - Altered source versions must be plainly marked as such,
@@ -30,29 +30,49 @@
 
 import sys
 import os
-import urllib2
-import BaseHTTPServer
 from xml.etree import ElementTree
 import json
+import getopt
 
-from api import AwasuApi
-from api import convert_api_args
+try :
+    from urllib2 import HTTPError
+except ImportError:
+    from urllib.request import HTTPError
+try :
+    from BaseHTTPServer import BaseHTTPRequestHandler
+except ImportError:
+    from http.server import BaseHTTPRequestHandler
+
+from awasu_api.api import AwasuApi , convert_api_args
+
+# ---------------------------------------------------------------------
+
+def print_utf8( val ) :
+    """Print a string as UTF8."""
+    if type(val) is u"".__class__ :
+        val = val.encode( "utf-8" )
+    else :
+        assert type(val) is b"".__class__
+    if sys.version_info.major == 2 :
+        print( val )
+    else :
+        sys.stdout.buffer.write( val )
 
 # ---------------------------------------------------------------------
 
 def print_help() :
     script_name = os.path.split(sys.argv[0])[ 1 ]
     #pylint: disable=line-too-long
-    print "{} [options] [api-name] [arg1] [arg2] ...".format( script_name )
-    print "  Calls the Awasu API."
-    print
-    print "Options:"
-    print "  -u --url       Invocation URL (default={})".format( AwasuApi.DEFAULT_API_URL )
-    print "  -t --token     Awasu API token."
-    print "  -h --headers   Output the HTTP response headers."
-    print "  -r --raw       Output the raw response."
-    print
-    print """The arguments following [api-name] are passed on to Awasu via the API call and are specified as they would normally be in a URL (i.e. "key=val" pairs).
+    print( "{} [options] [api-name] [arg1] [arg2] ...".format( script_name ) )
+    print( "  Calls the Awasu API.")
+    print( "" )
+    print( "Options:" )
+    print( "  -u --url       Invocation URL (default={})".format( AwasuApi.DEFAULT_API_URL ) )
+    print( "  -t --token     Awasu API token." )
+    print( "  -h --headers   Output the HTTP response headers." )
+    print( "  -r --raw       Output the raw response." )
+    print( "" )
+    print( """The arguments following [api-name] are passed on to Awasu via the API call and are specified as they would normally be in a URL (i.e. "key=val" pairs).
 
 For API calls that expect POST data, pipe the data into stdin.
 
@@ -68,7 +88,7 @@ Examples:
 
   Add an item to the default workpad:
     {script_name} workpads/addItem id=@ url=http://awasu.com title=Awasu
-""".format( script_name=script_name )
+""".format( script_name=script_name ) )
     #pylint: enable=line-too-long
 
 # ---------------------------------------------------------------------
@@ -81,14 +101,13 @@ url = None
 token = None
 dump_headers = False
 raw_mode = False
-import getopt
 try :
     opts , args = getopt.getopt(
         sys.argv[1:] ,
         "u:t:hr?" ,
         ["url=","token=","headers","raw","help"]
     )
-except getopt.GetoptError , err :
+except getopt.GetoptError as err :
     raise Exception( "Can't parse arguments: {}".format( err ) )
 for opt,val in opts :
     if opt in ("-u","--url") :
@@ -116,23 +135,26 @@ try :
     hdrs , body = awasu_api.call_api(
         args[0] , api_args , post_data , raw_mode , True
     )
-except urllib2.HTTPError , xcptn :
-    print "HTTP {}: {}".format( xcptn.code , BaseHTTPServer.BaseHTTPRequestHandler.responses[xcptn.code][0] )
-    print xcptn.read()
+except HTTPError as xcptn :
+    print( "HTTP {}: {}".format(
+        xcptn.code , BaseHTTPRequestHandler.responses[xcptn.code][0]
+    ) )
+    print( xcptn.read() )
     hdrs = {}
     body = None
 
 # output the results
 if dump_headers :
-    print "Response headers:"
+    print( "Response headers:" )
     if len(hdrs) > 0 :
         max_key_len = max( [ len(k) for k in hdrs.keys() ] )
+        fmt = "  {:<%d} {}" % (1+max_key_len)
         for key,val in hdrs.items() :
-            print "  {} {}".format( (str(key)+":").ljust(1+max_key_len) , val )
-    print
+            print( fmt.format( str(key)+":" , val ) )
+    print( "" )
 if isinstance( body , ElementTree.Element ) :
-    print ElementTree.tostring( body )
+    print_utf8( ElementTree.tostring( body ) )
 elif isinstance( body , dict ) :
-    print json.dumps( body )
+    print_utf8( json.dumps( body ) )
 elif body :
-    print body
+    print_utf8( body )

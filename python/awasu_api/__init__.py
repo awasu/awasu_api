@@ -1,4 +1,4 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015 (all rights reserved).
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-17 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -13,7 +13,7 @@
 #
 #               - The origin of this software must not be misrepresented;
 #                 you must not claim that you wrote the original software.
-#                 If you use this software, an acknowledgment is requested
+#                 If you use this software, an acknowledgement is requested
 #                 but not required.
 #
 #               - Altered source versions must be plainly marked as such,
@@ -29,6 +29,6 @@
         http://awasu.com/api
 """
 
-# NOTE: We bring these into the top-level namespace as a convienence (so that
+# NOTE: We bring these into the top-level namespace as a convenience (so that
 # callers can use "awasu_api.doodad" instead of "awasu_api.api.doodad").
 from awasu_api.api import AwasuApi , AwasuApiException
