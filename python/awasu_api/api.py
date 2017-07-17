@@ -387,6 +387,11 @@ class AwasuApi( object ) : #pylint: disable=too-many-public-methods
             if workpad["status"] != "OK" :
                 raise AwasuApiException( "Can't delete workpad \"{name}\" ({id}): {status}".format( **workpad ) )
 
+    def get_feed_items( self , ids=None ) :
+        """Get the specified feed items."""
+        api_args = add_ids_to_api_args( {"format":"json"} , ids )
+        return self.call_api_and_check( "feedItems/get" , api_args )[ "feedItems" ]
+
     def run_search_query( self , query_string , search_locs=None , results_fmt="excerpt" , adv_syntax=False , page_no=1 , page_size=10 ) : #pylint: disable=line-too-long,too-many-arguments
         """Run the specified search query."""
         api_args = {
