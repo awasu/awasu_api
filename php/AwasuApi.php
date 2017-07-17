@@ -570,6 +570,17 @@ public function deleteWorkpads( $workpadIds )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+public function getFeedItems( $itemIds )
+{
+    // get the specified feed items
+    $apiArgs = array( 'format'=>'json' ) ;
+    $apiArgs = $this->addIdsToApiArgs( $apiArgs , $itemIds ) ;
+    $response = $this->callApiAndCheck( 'feedItems/get' , $apiArgs ) ;
+    return $response[ 'feedItems' ] ;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 public function runSearchQuery( $queryString , $searchLocations=null , $resultsFormat='excerpt' , $advancedSyntax=false , $pageNo=1 , $pageSize=10 )
 {
     // run the specified search query
