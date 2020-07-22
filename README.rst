@@ -8,4 +8,4 @@ Awasu API
 - Configuring Awasu *e.g. creating new channels or reports or workpads, or changing their configuration.*
 - Controlling Awasu *e.g. triggering reports, adding new content to workpads.*
 
-A tutorial is available `here <http://www.awasu.com/weblog/awasu-api/>`_.
+A tutorial is available `here <https://awasu.com/weblog/awasu-api/>`_.

@@ -1,4 +1,4 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-17 (all rights reserved).
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-20 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -26,7 +26,7 @@
 #                 source distribution.
 
 """ Tools for automating Awasu via its API.
-        http://awasu.com/api
+        https://awasu.com/api
 """
 
 # NOTE: We bring these into the top-level namespace as a convenience (so that

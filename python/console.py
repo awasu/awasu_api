@@ -1,4 +1,4 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-17 (all rights reserved).
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-20 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -87,7 +87,7 @@ Examples:
     {script_name} reports/update id=... <newReportConfig.xml
 
   Add an item to the default workpad:
-    {script_name} workpads/addItem id=@ url=http://awasu.com title=Awasu
+    {script_name} workpads/addItem id=@ url=https://awasu.com title=Awasu
 """.format( script_name=script_name ) )
     #pylint: enable=line-too-long
 
