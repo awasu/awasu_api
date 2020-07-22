@@ -7,5 +7,9 @@ setup(
     url = "https://awasu.com/awasu_api" ,
     author = "Awasu" ,
     author_email = "support@awasu.com" ,
-    packages = ["awasu_api"]
+    packages = ["awasu_api"],
+    entry_points = {
+        "console_scripts": "awasu-api = awasu_api:console",
+    }
+
 )
