@@ -1,4 +1,9 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-20 (all rights reserved).
+""" Tools for automating Awasu via its API.
+
+https://awasu.com/api
+"""
+
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -24,10 +29,6 @@
 #
 #               - This notice may not be removed or altered from any
 #                 source distribution.
-
-""" Tools for automating Awasu via its API.
-        https://awasu.com/api
-"""
 
 # NOTE: We bring these into the top-level namespace as a convenience (so that
 # callers can use "awasu_api.doodad" instead of "awasu_api.api.doodad").

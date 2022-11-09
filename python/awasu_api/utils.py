@@ -1,4 +1,7 @@
-# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-20 (all rights reserved).
+""" Miscellaneous utilities.
+"""
+
+# COPYRIGHT:    (c) Awasu Pty. Ltd. 2015 (all rights reserved).
 #               Unauthorized use of this code is prohibited.
 #
 # LICENSE:      This software is provided 'as-is', without any express
@@ -25,43 +28,44 @@
 #               - This notice may not be removed or altered from any
 #                 source distribution.
 
-""" Miscellaneous utilities.
-"""
-
 import xml.sax.saxutils
 
 # ---------------------------------------------------------------------
 
-def dump_xml_tree( xml , prefix="" ) :
+def dump_xml_tree( elem, prefix="" ):
     """Dump a tree of xml.etree.ElementTree nodes."""
-    _do_dump_xml_tree( xml , prefix , 0 )
+    _do_dump_xml_tree( elem, prefix, 0 )
 
-def _do_dump_xml_tree( node , prefix , tag_field_width ) :
-    if node is None : return
+def _do_dump_xml_tree( node, prefix, tag_field_width ):
+    if node is None:
+        return
     # dump the XML node
     fmt = "{}{:<%d} {}" % (1+tag_field_width)
     print( fmt.format(
-        prefix ,
-        str(node.tag) + ":" ,
+        prefix,
+        str(node.tag) + ":",
         node.text.strip() if node.text else ""
     ) )
     # dump any attributes
-    for attr in node.items() :
-        print( "{}  @{} = {}".format( prefix , attr[0] , attr[1] ) )
+    for attr in node.items():
+        print( "{}  @{} = {}".format( prefix, attr[0], attr[1] ) )
     # dump any child nodes
     child_nodes = list( node )
-    if len(child_nodes) > 0 :
-        max_tag_len = max( [ len(cn.tag) for cn in child_nodes ] )
-        for cn in child_nodes :
-            _do_dump_xml_tree( cn , prefix+"    " , max_tag_len )
+    if len(child_nodes) > 0:
+        max_tag_len = max( len(cn.tag) for cn in child_nodes )
+        for cn in child_nodes:
+            _do_dump_xml_tree( cn, prefix+"    ", max_tag_len )
 
 # ---------------------------------------------------------------------
 
-def safe_xml_string( val ) :
+def safe_xml_string( val ):
     """Convert a value into something that's safe for inclusion in XML."""
-    if val is None : return ""
+    if val is None:
+        return ""
     return xml.sax.saxutils.escape( str(val) )
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def bool_string( val ) : return "true" if val else "false"
+def bool_string( val ):
+    """Convert a value to a boolean string."""
+    return "true" if val else "false"

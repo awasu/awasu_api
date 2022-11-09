@@ -1,6 +1,6 @@
 <?php
 /*
-* COPYRIGHT:    (c) Awasu Pty. Ltd. 2015-20 (all rights reserved).
+* COPYRIGHT:    (c) Awasu Pty. Ltd. 2015 (all rights reserved).
 *               Unauthorized use of this code is prohibited.
 *
 * LICENSE:      This software is provided 'as-is', without any express
@@ -36,32 +36,35 @@ class AwasuApiUtils
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // NOTE: print_r() is unreliable - use this if you want to dump SimpleXMLElement's.
-public static function dumpXmlTree( $xmlTree , $prefix='' ) { AwasuApiUtils::__doDumpXmlTree($xmlTree,$prefix,-1) ; }
+public static function dumpXmlTree( $xmlTree, $prefix='' ) {
+    AwasuApiUtils::__doDumpXmlTree( $xmlTree, $prefix, -1 ) ;
+}
 
-protected static function __doDumpXmlTree( $xmlNode , $prefix , $tagFieldWidth )
+protected static function __doDumpXmlTree( $xmlNode, $prefix, $tagFieldWidth )
 {
-    if ( $xmlNode == null ) return ;
-    
+    if ( $xmlNode == null )
+        return ;
+
     // dump the XML node
     print $prefix . $xmlNode->getName() . ':' ;
     if ( $tagFieldWidth > 0 )
-        print str_repeat( ' ' , $tagFieldWidth-strlen($xmlNode->getName())+1 ) ;
-    if ( trim((string)$xmlNode) != '' )
+        print str_repeat( ' ', $tagFieldWidth - strlen($xmlNode->getName()) + 1 ) ;
+    if ( trim( (string)$xmlNode ) != '' )
         print utf8_encode( (string)$xmlNode ) ;
     print "\n" ;
-    
-    // dump any attributes 
+
+    // dump any attributes
     foreach ( $xmlNode->attributes() as $attrName => $attrVal )
         print "$prefix  @$attrName=" . utf8_encode($attrVal) . "\n" ;
-        
-    // dump any child nodes 
-    if ( count($xmlNode->children()) > 0 )
+
+    // dump any child nodes
+    if ( count( $xmlNode->children() ) > 0 )
     {
         $maxTagLen = 0 ;
         foreach ( $xmlNode->children() as $childNode )
-            $maxTagLen = max( strlen($childNode->getName()) , $maxTagLen ) ;
+            $maxTagLen = max( strlen( $childNode->getName() ), $maxTagLen ) ;
         foreach ( $xmlNode->children() as $childNode )
-            AwasuApiUtils::__doDumpXmlTree( $childNode , "$prefix    " , $maxTagLen ) ;
+            AwasuApiUtils::__doDumpXmlTree( $childNode, "$prefix    ", $maxTagLen ) ;
     }
 }
 
@@ -70,7 +73,11 @@ protected static function __doDumpXmlTree( $xmlNode , $prefix , $tagFieldWidth )
 public static function safeXmlString( $val )
 {
     // convert the string into something that's safe for XML
-    return str_replace( array('&','<','>','"') , array('&amp;','&lt;','&gt;','&quot;') , $val ) ;
+    return str_replace(
+        array('&','<','>','"'),
+        array('&amp;','&lt;','&gt;','&quot;'),
+        $val
+    ) ;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
